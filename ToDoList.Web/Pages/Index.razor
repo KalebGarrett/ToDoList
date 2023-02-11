@@ -1,24 +1,36 @@
 ﻿@page "/"
+@using ToDoList.Web.Models
+@using System.Net.Mime
 
 <div class="header">
     <h1 id="mainTitle">To Do List</h1>
-    <form id="taskForm">
-        <input type="text" name="newTaskInput" id="newTaskInput" placeholder="What are your plans?"/>
-        <input type="submit" id="newTaskSubmit" value="Add task"/>       
-    </form>
+    <EditForm Model="NewToDo">
+        <InputText @bind-Value="NewToDo.Text" type="text" name="newTaskInput" id="newTaskInput" placeholder="What are your plans?"/>
+        <button id="newTaskSubmit" @onclick="OnAddNewClick">Add New</button>
+    </EditForm>
 </div>
 
 <section class="taskList">
     <h2 id="taskHeading">Current Tasks</h2>
     <div id="tasks">
-        <div class="task">
-            <div class="taskContent">
-                <input type="text" class="text" value="A new task..." readonly>    
+        @for (var i = 0; i < ToDos.Count; i++)
+        {
+            var item = ToDos[i];
+            <div class="row">
+                <div class="col-12">
+                    <div class="task">
+                        <div class="taskContent">
+                            <EditForm Model="NewToDo">
+                                <InputText @bind-Value="item.Text" type="text" class="text" placeholder="A new task..." disabled="@(!item.AllowEdit)"/>
+                            </EditForm>
+                        </div>
+                    </div>
+                    <div class="commands">
+                        <button class="editTask" @onclick="@(() => OnEditClick(item))">Edit</button>
+                        <button class="deleteTask" @onclick="@(() => OnDeleteClick(item))">Delete</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="commands">
-            <button class="editTask">Edit</button>
-            <button class="deleteTask">Delete</button>
-        </div>
+        }
     </div>
 </section>
